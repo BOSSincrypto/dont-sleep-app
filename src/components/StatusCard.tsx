@@ -5,9 +5,15 @@ interface StatusCardProps {
   isActive: boolean;
   onToggle: () => void;
   timerSeconds: number | null;
+  loading?: boolean;
 }
 
-export function StatusCard({ isActive, onToggle, timerSeconds }: StatusCardProps) {
+export function StatusCard({
+  isActive,
+  onToggle,
+  timerSeconds,
+  loading = false,
+}: StatusCardProps) {
   const formatTime = (s: number) => {
     const h = Math.floor(s / 3600);
     const m = Math.floor((s % 3600) / 60);
@@ -41,7 +47,7 @@ export function StatusCard({ isActive, onToggle, timerSeconds }: StatusCardProps
         </div>
 
         <div className="text-center">
-          <h2 className="text-2xl font-bold tracking-tight">
+          <h2 className="text-2xl font-bold tracking-tight text-white">
             {isActive ? "Stay Awake" : "Sleep Allowed"}
           </h2>
           <p className="mt-1 text-sm text-neutral-400">
@@ -59,11 +65,13 @@ export function StatusCard({ isActive, onToggle, timerSeconds }: StatusCardProps
 
         <button
           onClick={onToggle}
+          disabled={loading}
           className={cn(
             "mt-2 flex items-center gap-2 rounded-xl px-8 py-3 font-semibold transition-all duration-300 active:scale-95",
             isActive
               ? "bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30"
-              : "bg-amber-500 text-neutral-900 hover:bg-amber-400 shadow-lg shadow-amber-500/20"
+              : "bg-amber-500 text-neutral-900 hover:bg-amber-400 shadow-lg shadow-amber-500/20",
+            loading && "opacity-50 cursor-not-allowed"
           )}
         >
           <Power className="h-5 w-5" />

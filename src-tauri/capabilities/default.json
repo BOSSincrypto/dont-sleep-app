@@ -11,9 +11,6 @@
     "global-shortcut:allow-register",
     "global-shortcut:allow-unregister",
     "global-shortcut:allow-is-registered",
-    "notification:default",
-    "os:default",
-    "shell:allow-open",
-    "store:default"
+    "notification:default"
   ]
 }

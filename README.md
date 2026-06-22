@@ -143,7 +143,7 @@ xattr -d com.apple.quarantine /Applications/Dont\ Sleep.app
 ---
 
 ## License
-n
+
 [MIT](LICENSE) © BOSSinCrypto
 
 ---

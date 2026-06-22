@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2.0.0",
-  "productName": "Dont Sleep",
+  "productName": "Don't Sleep",
   "version": "1.0.0",
   "identifier": "com.bossincrypto.dontsleep",
   "build": {
@@ -13,7 +13,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "Dont Sleep",
+        "title": "Don't Sleep",
         "width": 420,
         "height": 640,
         "resizable": false,
