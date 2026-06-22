@@ -52,10 +52,5 @@
     }
   },
   "plugins": {
-    "autostart": {
-      "macos": {
-        "launcher": "LaunchAgent"
-      }
-    }
   }
 }
