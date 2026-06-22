@@ -1,0 +1,61 @@
+{
+  "$schema": "https://schema.tauri.app/config/2.0.0",
+  "productName": "Don't Sleep",
+  "version": "1.0.0",
+  "identifier": "com.bossincrypto.dontsleep",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "Don't Sleep",
+        "width": 420,
+        "height": 640,
+        "resizable": false,
+        "maximizable": false,
+        "fullscreen": false,
+        "transparent": false,
+        "decorations": true,
+        "center": true,
+        "visible": true,
+        "label": "main"
+      }
+    ],
+    "security": {
+      "csp": null,
+      "capabilities": ["default"]
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "macOS": {
+      "frameworks": [],
+      "minimumSystemVersion": "10.13"
+    },
+    "windows": {
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      }
+    }
+  },
+  "plugins": {
+    "autostart": {
+      "macos": {
+        "launcher": "LaunchAgent"
+      }
+    }
+  }
+}
