@@ -118,8 +118,32 @@ git push origin v1.0.0
 
 ---
 
-## License
+## Troubleshooting
 
+### Windows: App immediately crashes on launch
+
+1. **Install WebView2 Runtime** — Tauri apps require Microsoft Edge WebView2. The `.msi` installer attempts to download it automatically, but if you run the `.exe` directly or offline, install WebView2 manually from [Microsoft's official page](https://developer.microsoft.com/en-us/microsoft-edge/webview2/).
+2. **Check log files** — Starting from v1.0.5, the app writes diagnostic logs next to the executable:
+   - `dont_sleep_app_error.log` — Tauri startup errors
+   - `dont_sleep_app_panic.log` — Rust panic messages
+3. **Run from Command Prompt** — Open `cmd.exe`, navigate to the install folder, and run `Dont Sleep.exe` to see real-time `println!` output.
+4. **Visual C++ Redistributables** — Ensure the latest [MSVC redistributables](https://aka.ms/vs/17/release/vc_redist.x64.exe) are installed.
+
+### Windows: SmartScreen warning
+
+The app is not code-signed (certificates cost ~$70–99/year). Click **More info → Run anyway** to proceed.
+
+### macOS: Gatekeeper blocks the app
+
+Right-click the `.app` → **Open**, or run:
+```bash
+xattr -d com.apple.quarantine /Applications/Dont\ Sleep.app
+```
+
+---
+
+## License
+n
 [MIT](LICENSE) © BOSSinCrypto
 
 ---
