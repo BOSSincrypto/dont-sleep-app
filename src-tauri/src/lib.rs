@@ -50,11 +50,14 @@ pub fn run() {
                     .build(app)?;
 
                 // Hide window on close instead of exiting
+                let app_handle = app.handle().clone();
                 if let Some(window) = app.get_webview_window("main") {
                     window.on_window_event(move |event| {
                         if let tauri::WindowEvent::CloseRequested { api, .. } = event {
-                            window.hide().unwrap();
-                            api.prevent_close();
+                            if let Some(window) = app_handle.get_webview_window("main") {
+                                window.hide().unwrap();
+                                api.prevent_close();
+                            }
                         }
                     });
                 }
