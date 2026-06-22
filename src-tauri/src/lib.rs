@@ -51,7 +51,7 @@ pub fn run() {
 
                 // Hide window on close instead of exiting
                 if let Some(window) = app.get_webview_window("main") {
-                    window.on_window_event(|window, event| {
+                    window.on_window_event(move |event| {
                         if let tauri::WindowEvent::CloseRequested { api, .. } = event {
                             window.hide().unwrap();
                             api.prevent_close();
@@ -80,7 +80,7 @@ mod commands {
     pub fn start_keep_awake(state: State<KeepAwakeState>) -> Result<(), String> {
         let mut guard = state.0.lock().map_err(|e| e.to_string())?;
         if guard.is_none() {
-            let awake = keepawake::Builder::new()
+            let awake = keepawake::Builder::default()
                 .display(true)
                 .idle(true)
                 .reason("Don't Sleep app")
