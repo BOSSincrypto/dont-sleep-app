@@ -1,3 +1,6 @@
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
+
 use tauri::{Emitter, Manager};
 use tauri_plugin_notification::NotificationExt;
 
@@ -104,6 +107,14 @@ pub fn run() {
                 use tauri::menu::{Menu, MenuItem, PredefinedMenuItem};
                 use tauri::tray::TrayIconBuilder;
 
+                // Tracks whether the user explicitly chose "Quit" from the tray menu.
+                // Prevents the CloseRequested handler from trying to hide the window
+                // while the event loop is already shutting down, which can trigger
+                // a tao panic on Windows ("cannot move state from Destroyed").
+                let is_quitting = Arc::new(AtomicBool::new(false));
+                let is_quitting_tray = is_quitting.clone();
+                let is_quitting_window = is_quitting.clone();
+
                 println!("[setup] Creating tray menu...");
                 let menu = Menu::with_items(
                     app,
@@ -119,7 +130,7 @@ pub fn run() {
                 let tray_builder = TrayIconBuilder::new()
                     .tooltip("Don't Sleep")
                     .menu(&menu)
-                    .on_menu_event(|app, event| {
+                    .on_menu_event(move |app, event| {
                         match event.id.as_ref() {
                             "show" => {
                                 if let Some(window) = app.get_webview_window("main") {
@@ -128,6 +139,7 @@ pub fn run() {
                                 }
                             }
                             "quit" => {
+                                is_quitting_tray.store(true, Ordering::Relaxed);
                                 app.exit(0);
                             }
                             _ => {}
@@ -151,9 +163,13 @@ pub fn run() {
                     println!("[setup] Attaching CloseRequested handler...");
                     window.on_window_event(move |event| {
                         if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                            if is_quitting_window.load(Ordering::Relaxed) {
+                                // Let the event loop shut down cleanly.
+                                return;
+                            }
                             if let Some(window) = app_handle.get_webview_window("main") {
                                 println!("[window] CloseRequested intercepted, hiding window...");
-                                window.hide().unwrap();
+                                let _ = window.hide();
                                 api.prevent_close();
                             }
                         }
