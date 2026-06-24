@@ -1,16 +1,23 @@
 import { useState, useEffect } from "react";
-import { Settings, Keyboard, Zap } from "lucide-react";
+import { Settings, Keyboard, Zap, AlertCircle } from "lucide-react";
 import { isEnabled, enable, disable } from "@tauri-apps/plugin-autostart";
 
 export function SettingsPanel() {
   const [autostart, setAutostart] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     isEnabled().then(setAutostart).catch(() => {});
   }, []);
 
+  const showError = (message: string) => {
+    setError(message);
+    setTimeout(() => setError(null), 5000);
+  };
+
   const toggleAutostart = async () => {
     try {
+      setError(null);
       if (autostart) {
         await disable();
         setAutostart(false);
@@ -19,7 +26,9 @@ export function SettingsPanel() {
         setAutostart(true);
       }
     } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
       console.error("Autostart error:", e);
+      showError(`Autostart error: ${message}`);
     }
   };
 
@@ -29,6 +38,13 @@ export function SettingsPanel() {
         <Settings className="h-5 w-5 text-amber-400" />
         <h3 className="font-semibold text-white">Settings</h3>
       </div>
+
+      {error && (
+        <div className="mb-3 flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300">
+          <AlertCircle className="h-3 w-3 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
 
       <div className="space-y-3">
         <div className="flex items-center justify-between rounded-xl border border-white/5 bg-neutral-800 px-4 py-3">

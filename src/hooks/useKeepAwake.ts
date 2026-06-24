@@ -122,10 +122,14 @@ export function useKeepAwake() {
       let remaining = seconds;
       timerIntervalRef.current = setInterval(() => {
         remaining -= 1;
-        setTimerSeconds(remaining);
         if (remaining <= 0) {
+          // Stop the interval immediately so another tick cannot fire
+          // while the async stop() call is in flight.
+          clearTimer();
           stop();
+          return;
         }
+        setTimerSeconds(remaining);
       }, 1000);
     },
     [start, stop, setTimerSeconds, clearTimer]
