@@ -67,8 +67,6 @@ pub fn run() {
         ))
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
-                .with_shortcut("CmdOrCtrl+Shift+K")
-                .expect("failed to parse global shortcut")
                 .with_handler(|app, _shortcut, event| {
                     if event.state == tauri_plugin_global_shortcut::ShortcutState::Pressed {
                         println!("[shortcut] CmdOrCtrl+Shift+K pressed");
@@ -156,6 +154,20 @@ pub fn run() {
 
                 tray_builder.build(app)?;
                 println!("[setup] Tray icon built successfully");
+
+                // Register global shortcut imperatively so that a registration
+                // failure (e.g. another instance already holds the hotkey) is
+                // logged as a warning instead of crashing the entire app.
+                use tauri_plugin_global_shortcut::GlobalShortcutExt;
+                match app.global_shortcut().register("CmdOrCtrl+Shift+K") {
+                    Ok(()) => println!("[setup] Global shortcut Ctrl+Shift+K registered"),
+                    Err(e) => {
+                        eprintln!("[setup] Failed to register global shortcut: {}", e);
+                        eprintln!(
+                            "[setup] Another instance or application may already hold Ctrl+Shift+K."
+                        );
+                    }
+                }
 
                 // Hide window on close instead of exiting
                 let app_handle = app.handle().clone();
